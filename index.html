@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frecka Fitness — Content Studio</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #253551;
+      --off-white: #e0e0db;
+      --warm-white: #eaeae6;
+      --accent: #c8a96e;
+      --accent-dark: #a8893e;
+      --mid-grey: #6a7080;
+      --light-grey: #d0d0cb;
+      --error: #c0392b;
+      --success: #2d6a4f;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--off-white);
+      color: var(--black);
+      min-height: 100vh;
+    }
+
+    /* ── PASSWORD SCREEN ── */
+    #password-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: var(--black);
+    }
+
+    .lock-card {
+      background: var(--off-white);
+      border-radius: 12px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .lock-card .wordmark {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .lock-card h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 32px;
+    }
+
+    .lock-card input[type="password"] {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 15px;
+      border: 2px solid var(--light-grey);
+      border-radius: 8px;
+      background: white;
+      color: var(--black);
+      margin-bottom: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .lock-card input[type="password"]:focus {
+      border-color: var(--accent);
+    }
+
+    .lock-card .error-msg {
+      font-size: 13px;
+      color: var(--error);
+      margin-bottom: 12px;
+      min-height: 18px;
+    }
+
+    /* ── SETUP SCREEN ── */
+    #setup-screen {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: var(--black);
+    }
+
+    .setup-card {
+      background: var(--off-white);
+      border-radius: 12px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .setup-card .wordmark {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .setup-card h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 8px;
+    }
+
+    .setup-card p {
+      font-size: 14px;
+      color: var(--mid-grey);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .setup-card label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mid-grey);
+      margin-bottom: 8px;
+    }
+
+    .setup-card input[type="text"],
+    .setup-card input[type="password"] {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 14px;
+      font-family: monospace;
+      border: 2px solid var(--light-grey);
+      border-radius: 8px;
+      background: white;
+      color: var(--black);
+      margin-bottom: 20px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .setup-card input:focus {
+      border-color: var(--accent);
+    }
+
+    /* ── MAIN APP ── */
+    #app {
+      display: none;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--black);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid var(--accent);
+    }
+
+    .header-brand {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-brand .wordmark {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2px;
+    }
+
+    .header-brand .title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--off-white);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-ghost {
+      background: none;
+      border: 1px solid rgba(224,224,219,0.3);
+      color: var(--off-white);
+      font-size: 12px;
+      padding: 7px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px;
+      width: 100%;
+    }
+
+    /* ── INPUT PANEL ── */
+    .input-panel {
+      background: white;
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: 0 1px 4px rgba(37,53,81,0.08);
+    }
+
+    .panel-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .field-group {
+      margin-bottom: 20px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mid-grey);
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 15px;
+      line-height: 1.6;
+      border: 2px solid var(--light-grey);
+      border-radius: 8px;
+      background: var(--warm-white);
+      color: var(--black);
+      resize: vertical;
+      min-height: 100px;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+      background: white;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 14px;
+      border: 2px solid var(--light-grey);
+      border-radius: 8px;
+      background: var(--warm-white);
+      color: var(--black);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236a7080' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+
+    select:focus {
+      border-color: var(--accent);
+      background-color: white;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 0;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .checkbox-row label {
+      font-size: 14px;
+      color: var(--black);
+      cursor: pointer;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-primary {
+      background: var(--accent);
+      color: var(--black);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 14px 32px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      width: 100%;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-dark);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-copy {
+      background: none;
+      border: 1px solid var(--light-grey);
+      color: var(--mid-grey);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-copy:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-copy.copied {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    /* ── LOADING ── */
+    .loading-state {
+      display: none;
+      text-align: center;
+      padding: 48px;
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 32px;
+      box-shadow: 0 1px 4px rgba(37,53,81,0.08);
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--light-grey);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-state p {
+      color: var(--mid-grey);
+      font-size: 14px;
+    }
+
+    /* ── OUTPUT PANELS ── */
+    #output {
+      display: none;
+    }
+
+    .output-section {
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 4px rgba(37,53,81,0.08);
+      overflow: hidden;
+    }
+
+    .output-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--warm-white);
+    }
+
+    .output-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--black);
+    }
+
+    .output-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .badge-hook { background: rgba(200,169,110,0.15); color: var(--accent-dark); }
+    .badge-script { background: rgba(37,53,81,0.08); color: var(--black); }
+    .badge-shots { background: rgba(45,106,79,0.1); color: var(--success); }
+    .badge-broll { background: rgba(45,106,79,0.1); color: var(--success); }
+    .badge-ig { background: rgba(200,169,110,0.15); color: var(--accent-dark); }
+    .badge-fb { background: rgba(37,53,81,0.08); color: var(--black); }
+    .badge-li { background: rgba(37,53,81,0.15); color: var(--black); }
+    .badge-nl { background: rgba(200,169,110,0.2); color: var(--accent-dark); }
+
+    .output-body {
+      padding: 20px 24px;
+    }
+
+    .output-text {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--black);
+      white-space: pre-wrap;
+    }
+
+    .shot-list {
+      list-style: none;
+      counter-reset: shot;
+    }
+
+    .shot-list li {
+      counter-increment: shot;
+      display: flex;
+      gap: 14px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--warm-white);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .shot-list li:last-child {
+      border-bottom: none;
+    }
+
+    .shot-list li::before {
+      content: counter(shot);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 26px;
+      height: 26px;
+      background: var(--accent);
+      color: var(--black);
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .broll-list {
+      list-style: none;
+    }
+
+    .broll-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--warm-white);
+      font-size: 14px;
+      line-height: 1.5;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .broll-list li:last-child {
+      border-bottom: none;
+    }
+
+    .broll-list li::before {
+      content: "→";
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .error-banner {
+      display: none;
+      background: rgba(192,57,43,0.08);
+      border: 1px solid rgba(192,57,43,0.3);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      color: var(--error);
+    }
+
+    /* ── API KEY MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(37,53,81,0.7);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-card {
+      background: var(--off-white);
+      border-radius: 12px;
+      padding: 40px;
+      max-width: 440px;
+      width: 90%;
+    }
+
+    .modal-card h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .modal-card p {
+      font-size: 13px;
+      color: var(--mid-grey);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .modal-card input {
+      width: 100%;
+      padding: 12px 14px;
+      font-family: monospace;
+      font-size: 13px;
+      border: 2px solid var(--light-grey);
+      border-radius: 8px;
+      background: white;
+      color: var(--black);
+      margin-bottom: 16px;
+      outline: none;
+    }
+
+    .modal-card input:focus {
+      border-color: var(--accent);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-secondary {
+      background: none;
+      border: 2px solid var(--light-grey);
+      color: var(--mid-grey);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 7px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      .field-row { grid-template-columns: 1fr; }
+      .main { padding: 24px 16px; }
+      .input-panel, .output-body { padding: 20px; }
+      header { padding: 14px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── PASSWORD SCREEN ── -->
+  <div id="password-screen">
+    <div class="lock-card">
+      <div class="wordmark">Frecka Fitness</div>
+      <h1>Content Studio</h1>
+      <input type="password" id="pw-input" placeholder="Enter password" autocomplete="current-password" />
+      <div class="error-msg" id="pw-error"></div>
+      <button class="btn-primary" onclick="checkPassword()">Enter</button>
+    </div>
+  </div>
+
+  <!-- ── SETUP SCREEN (first run, no API key) ── -->
+  <div id="setup-screen">
+    <div class="setup-card">
+      <div class="wordmark">Frecka Fitness</div>
+      <h1>One-time setup</h1>
+      <p>Enter your Claude API key to get started. It's saved to this browser only — you won't need to enter it again.</p>
+      <label>Claude API Key</label>
+      <input type="text" id="setup-key-input" placeholder="sk-ant-api03-..." />
+      <button class="btn-primary" onclick="saveApiKey()">Save & Continue</button>
+    </div>
+  </div>
+
+  <!-- ── MAIN APP ── -->
+  <div id="app">
+    <header>
+      <div class="header-brand">
+        <span class="wordmark">Frecka Fitness</span>
+        <span class="title">Content Studio</span>
+      </div>
+      <div class="header-actions">
+        <button class="btn-ghost" onclick="showApiKeyModal()">API Key</button>
+        <button class="btn-ghost" onclick="logout()">Lock</button>
+      </div>
+    </header>
+
+    <div class="main">
+
+      <!-- Input Panel -->
+      <div class="input-panel">
+        <div class="panel-label">New Content</div>
+
+        <div class="field-group">
+          <label class="field-label">Content Idea</label>
+          <textarea id="idea-input" placeholder="Describe your idea, angle, or topic. The more specific the better — e.g. 'Why rock climbers need to eat more protein than they think, and how underfueling hurts both performance and recovery'" rows="4"></textarea>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Content Pillar</label>
+            <select id="pillar-select">
+              <option value="athlete-underfueling">Athlete Underfueling</option>
+              <option value="strength-training">Benefits of Strength Training</option>
+              <option value="programming">Programming Essentials (RPE / RIR)</option>
+              <option value="general">General S&C / Other</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Format</label>
+            <select id="format-select">
+              <option value="reel">Short-form Reel (30–60s)</option>
+              <option value="long">Long-form Video (2–5 min)</option>
+              <option value="static">Static Post (no script needed)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="include-newsletter" />
+          <label for="include-newsletter">Include newsletter draft</label>
+        </div>
+
+        <button class="btn-primary" id="generate-btn" onclick="generate()">Generate Content</button>
+      </div>
+
+      <!-- Error Banner -->
+      <div class="error-banner" id="error-banner"></div>
+
+      <!-- Loading -->
+      <div class="loading-state" id="loading">
+        <div class="spinner"></div>
+        <p>Writing your content...</p>
+      </div>
+
+      <!-- Output -->
+      <div id="output">
+
+        <div class="output-section" id="section-hook">
+          <div class="output-header">
+            <span class="output-title">Hook</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="output-badge badge-hook">First 3 seconds</span>
+              <button class="btn-copy" onclick="copySection('hook-text')">Copy</button>
+            </div>
+          </div>
+          <div class="output-body">
+            <div class="output-text" id="hook-text"></div>
+          </div>
+        </div>
+
+        <div class="output-section" id="section-script" style="display:none;">
+          <div class="output-header">
+            <span class="output-title">Script</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="output-badge badge-script">Spoken word</span>
+              <button class="btn-copy" onclick="copySection('script-text')">Copy</button>
+            </div>
+          </div>
+          <div class="output-body">
+            <div class="output-text" id="script-text"></div>
+          </div>
+        </div>
+
+        <div class="output-section" id="section-shots">
+          <div class="output-header">
+            <span class="output-title">Shot List</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="output-badge badge-shots">Film in order</span>
+              <button class="btn-copy" onclick="copyShotList()">Copy</button>
+            </div>
+          </div>
+          <div class="output-body">
+            <ol class="shot-list" id="shot-list"></ol>
+          </div>
+        </div>
+
+        <div class="output-section">
+          <div class="output-header">
+            <span class="output-title">B-roll Suggestions</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="output-badge badge-broll">Supporting footage</span>
+              <button class="btn-copy" onclick="copyBroll()">Copy</button>
+            </div>
+          </div>
+          <div class="output-body">
+            <ul class="broll-list" id="broll-list"></ul>
+          </div>
+        </div>
+
+        <div class="output-section">
+          <div class="output-header">
+            <span class="output-title">Instagram Caption</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="output-badge badge-ig">Instagram</span>
+              <button class="btn-copy" onclick="copySection('ig-caption')">Copy</button>
+            </div>
+          </div>
+          <div class="output-body">
+            <div class="output-text" id="ig-caption"></div>
+          </div>
+        </div>
+
+        <div class="output-section">
+          <div class="output-header">
+            <span class="output-title">Facebook Caption</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="output-badge badge-fb">Facebook</span>
+              <button class="btn-copy" onclick="copySection('fb-caption')">Copy</button>
+            </div>
+          </div>
+          <div class="output-body">
+            <div class="output-text" id="fb-caption"></div>
+          </div>
+        </div>
+
+        <div class="output-section">
+          <div class="output-header">
+            <span class="output-title">LinkedIn Caption</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="output-badge badge-li">LinkedIn</span>
+              <button class="btn-copy" onclick="copySection('li-caption')">Copy</button>
+            </div>
+          </div>
+          <div class="output-body">
+            <div class="output-text" id="li-caption"></div>
+          </div>
+        </div>
+
+        <div class="output-section" id="section-newsletter" style="display:none;">
+          <div class="output-header">
+            <span class="output-title">Newsletter Draft</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="output-badge badge-nl">Email</span>
+              <button class="btn-copy" onclick="copySection('newsletter-text')">Copy</button>
+            </div>
+          </div>
+          <div class="output-body">
+            <div class="output-text" id="newsletter-text"></div>
+          </div>
+        </div>
+
+      </div><!-- /output -->
+    </div><!-- /main -->
+  </div><!-- /app -->
+
+  <!-- ── API KEY MODAL ── -->
+  <div class="modal-overlay" id="api-modal">
+    <div class="modal-card">
+      <h2>Update API Key</h2>
+      <p>Your key is stored in this browser only and never leaves your device.</p>
+      <input type="text" id="modal-key-input" placeholder="sk-ant-api03-..." />
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeApiKeyModal()">Cancel</button>
+        <button class="btn-primary" style="flex:1;" onclick="updateApiKey()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const CORRECT_PASSWORD = 'OnlyWeakness0219.';
+    const API_KEY_STORAGE  = 'ff_content_api_key';
+    const AUTH_SESSION_KEY = 'ff_content_authed';
+
+    // ── BOOT ──────────────────────────────────────────────────────────────
+    function boot() {
+      const authed = sessionStorage.getItem(AUTH_SESSION_KEY) === '1';
+      if (!authed) {
+        show('password-screen');
+        document.getElementById('pw-input').addEventListener('keydown', e => {
+          if (e.key === 'Enter') checkPassword();
+        });
+        return;
+      }
+      postAuthBoot();
+    }
+
+    function postAuthBoot() {
+      const hasKey = !!localStorage.getItem(API_KEY_STORAGE);
+      if (!hasKey) {
+        show('setup-screen');
+        document.getElementById('setup-key-input').addEventListener('keydown', e => {
+          if (e.key === 'Enter') saveApiKey();
+        });
+      } else {
+        showApp();
+      }
+    }
+
+    // ── AUTH ──────────────────────────────────────────────────────────────
+    function checkPassword() {
+      const val = document.getElementById('pw-input').value;
+      if (val === CORRECT_PASSWORD) {
+        sessionStorage.setItem(AUTH_SESSION_KEY, '1');
+        hide('password-screen');
+        postAuthBoot();
+      } else {
+        document.getElementById('pw-error').textContent = 'Incorrect password.';
+        document.getElementById('pw-input').value = '';
+        document.getElementById('pw-input').focus();
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem(AUTH_SESSION_KEY);
+      location.reload();
+    }
+
+    // ── API KEY ────────────────────────────────────────────────────────────
+    function saveApiKey() {
+      const key = document.getElementById('setup-key-input').value.trim();
+      if (!key.startsWith('sk-ant')) {
+        alert('That doesn\'t look like a valid API key. It should start with sk-ant-');
+        return;
+      }
+      localStorage.setItem(API_KEY_STORAGE, key);
+      hide('setup-screen');
+      showApp();
+    }
+
+    function showApiKeyModal() {
+      document.getElementById('modal-key-input').value = localStorage.getItem(API_KEY_STORAGE) || '';
+      document.getElementById('api-modal').style.display = 'flex';
+    }
+
+    function closeApiKeyModal() {
+      document.getElementById('api-modal').style.display = 'none';
+    }
+
+    function updateApiKey() {
+      const key = document.getElementById('modal-key-input').value.trim();
+      if (!key.startsWith('sk-ant')) {
+        alert('That doesn\'t look like a valid API key.');
+        return;
+      }
+      localStorage.setItem(API_KEY_STORAGE, key);
+      closeApiKeyModal();
+    }
+
+    function showApp() {
+      document.getElementById('app').style.display = 'flex';
+    }
+
+    // ── HELPERS ───────────────────────────────────────────────────────────
+    function show(id) { document.getElementById(id).style.display = 'flex'; }
+    function hide(id) { document.getElementById(id).style.display = 'none'; }
+
+    // ── SYSTEM PROMPT ─────────────────────────────────────────────────────
+    function buildSystemPrompt() {
+      return `You are a content writing assistant for Ryan Frecka, an evidence-based Strength & Conditioning coach and founder of Frecka Fitness.
+
+BRAND VOICE & POSITIONING:
+- Tagline: "Strength & Conditioning that fits your life"
+- Ryan's core message: sustainable, well-rounded fitness — not all-or-nothing, not extreme, not one-size-fits-all
+- Tone: direct, knowledgeable, relatable, and occasionally dry/witty — never preachy or bro-y
+- Evidence-based: reference actual science/studies when relevant, but keep it accessible
+- Anti-extreme: Ryan positions against hustle-culture fitness, fad diets, and cookie-cutter programs
+
+TARGET AUDIENCE:
+- Rock climbers (specific pain points: finger strength, pulling strength, antagonist imbalances, underfueling, injury prevention)
+- General population who struggle with consistency, balance, and fitting fitness into a real life
+- People who've tried extreme approaches and burned out
+
+CONTENT PILLARS:
+1. Athlete Underfueling — rock climbers and active people eating too little, RED-S, performance impacts, practical fixes
+2. Benefits of Strength Training — why everyone (especially climbers) needs it, overcoming common objections
+3. Programming Essentials — autoregulation, RPE (Rate of Perceived Exertion), RIR (Reps in Reserve), how to train smarter not just harder
+
+CONTENT STYLE NOTES:
+- Educational posts should feel like a smart friend explaining something, not a textbook
+- Hooks must create immediate tension or curiosity — no slow build-ups
+- Captions vary by platform (see below)
+- Shot lists should be practical and filmable solo or with minimal help
+
+OUTPUT FORMAT — return ONLY a valid JSON object with these exact keys:
+{
+  "hook": "The opening line/sentence spoken to camera (3 seconds max, creates immediate curiosity or tension)",
+  "script": "Full spoken script. Use line breaks between sections. Mark any on-screen text as [TEXT: ...]. Keep natural and conversational.",
+  "shot_list": ["Shot 1 description", "Shot 2 description", ...],
+  "broll": ["B-roll suggestion 1", "B-roll suggestion 2", ...],
+  "ig_caption": "Instagram caption. Punchy opener. 3-5 short paragraphs or stacked single lines. Relevant hashtags at end. 150-300 words.",
+  "fb_caption": "Facebook caption. More conversational, slightly longer than IG, no hashtags needed. Can include a question to spark comments.",
+  "li_caption": "LinkedIn caption. Professional but personal. Opens with a bold statement or surprising stat. Ends with a takeaway or question. 200-350 words.",
+  "newsletter": "Newsletter draft. Subject line on first line prefixed with 'Subject: '. Then a short intro, the main content expanded, and a CTA. 300-500 words."
+}
+
+Do not include the newsletter key if not requested. Do not add any text outside the JSON object.`;
+    }
+
+    // ── GENERATE ──────────────────────────────────────────────────────────
+    async function generate() {
+      const idea   = document.getElementById('idea-input').value.trim();
+      const pillar = document.getElementById('pillar-select').value;
+      const format = document.getElementById('format-select').value;
+      const wantNL = document.getElementById('include-newsletter').checked;
+      const apiKey = localStorage.getItem(API_KEY_STORAGE);
+
+      if (!idea) {
+        document.getElementById('idea-input').focus();
+        return;
+      }
+
+      if (!apiKey) {
+        showApiKeyModal();
+        return;
+      }
+
+      const pillarLabels = {
+        'athlete-underfueling': 'Athlete Underfueling',
+        'strength-training':    'Benefits of Strength Training',
+        'programming':          'Programming Essentials (RPE / RIR / Autoregulation)',
+        'general':              'General S&C'
+      };
+
+      const formatLabels = {
+        'reel':   'Short-form Reel (30–60 seconds)',
+        'long':   'Long-form Video (2–5 minutes)',
+        'static': 'Static post (no video script needed — skip script and shot list, focus on caption)'
+      };
+
+      const userMessage = `Content Pillar: ${pillarLabels[pillar]}
+Format: ${formatLabels[format]}
+Include Newsletter: ${wantNL ? 'Yes' : 'No'}
+
+Content Idea:
+${idea}
+
+Generate all content outputs for this idea now.`;
+
+      // UI state
+      hide('output');
+      hide('error-banner');
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('generate-btn').disabled = true;
+
+      try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-6',
+            max_tokens: 4096,
+            system: buildSystemPrompt(),
+            messages: [{ role: 'user', content: userMessage }]
+          })
+        });
+
+        if (!response.ok) {
+          const err = await response.json().catch(() => ({}));
+          throw new Error(err.error?.message || `API error ${response.status}`);
+        }
+
+        const data = await response.json();
+        const rawText = data.content[0].text.trim();
+
+        // Parse JSON — strip markdown code fences if present
+        const jsonStr = rawText.replace(/^```json?\s*/i, '').replace(/```\s*$/, '').trim();
+        const result = JSON.parse(jsonStr);
+
+        renderOutput(result, format, wantNL);
+
+      } catch (err) {
+        const banner = document.getElementById('error-banner');
+        banner.textContent = err.message.includes('API key')
+          ? 'Invalid API key. Click "API Key" in the header to update it.'
+          : `Error: ${err.message}`;
+        banner.style.display = 'block';
+      } finally {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('generate-btn').disabled = false;
+      }
+    }
+
+    // ── RENDER ────────────────────────────────────────────────────────────
+    function renderOutput(data, format, wantNL) {
+      // Hook
+      document.getElementById('hook-text').textContent = data.hook || '';
+
+      // Script (hidden for static posts)
+      const scriptSection = document.getElementById('section-script');
+      if (format !== 'static' && data.script) {
+        document.getElementById('script-text').textContent = data.script;
+        scriptSection.style.display = 'block';
+      } else {
+        scriptSection.style.display = 'none';
+      }
+
+      // Shot list (hidden for static posts)
+      const shotsSection = document.getElementById('section-shots');
+      if (format !== 'static' && data.shot_list?.length) {
+        const ol = document.getElementById('shot-list');
+        ol.innerHTML = '';
+        data.shot_list.forEach(shot => {
+          const li = document.createElement('li');
+          li.textContent = shot;
+          ol.appendChild(li);
+        });
+        shotsSection.style.display = 'block';
+      } else {
+        shotsSection.style.display = 'none';
+      }
+
+      // B-roll
+      const ul = document.getElementById('broll-list');
+      ul.innerHTML = '';
+      (data.broll || []).forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        ul.appendChild(li);
+      });
+
+      // Captions
+      document.getElementById('ig-caption').textContent = data.ig_caption || '';
+      document.getElementById('fb-caption').textContent = data.fb_caption || '';
+      document.getElementById('li-caption').textContent = data.li_caption || '';
+
+      // Newsletter
+      const nlSection = document.getElementById('section-newsletter');
+      if (wantNL && data.newsletter) {
+        document.getElementById('newsletter-text').textContent = data.newsletter;
+        nlSection.style.display = 'block';
+      } else {
+        nlSection.style.display = 'none';
+      }
+
+      document.getElementById('output').style.display = 'block';
+      document.getElementById('output').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ── COPY ──────────────────────────────────────────────────────────────
+    function copySection(id) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = event.target;
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    function copyShotList() {
+      const items = document.querySelectorAll('#shot-list li');
+      const text = Array.from(items).map((li, i) => `${i + 1}. ${li.textContent}`).join('\n');
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = event.target;
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    function copyBroll() {
+      const items = document.querySelectorAll('#broll-list li');
+      const text = Array.from(items).map(li => `• ${li.textContent}`).join('\n');
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = event.target;
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // ── INIT ──────────────────────────────────────────────────────────────
+    boot();
+  </script>
+</body>
+</html>
