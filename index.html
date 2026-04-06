@@ -820,7 +820,7 @@
 
     // ── BOOT ──────────────────────────────────────────────────────────────
     function boot() {
-      const authed = sessionStorage.getItem(AUTH_SESSION_KEY) === '1';
+      const authed = localStorage.getItem(AUTH_SESSION_KEY) === '1';
       if (!authed) {
         show('password-screen');
         document.getElementById('pw-input').addEventListener('keydown', e => {
@@ -847,7 +847,7 @@
     function checkPassword() {
       const val = document.getElementById('pw-input').value;
       if (val === CORRECT_PASSWORD) {
-        sessionStorage.setItem(AUTH_SESSION_KEY, '1');
+        localStorage.setItem(AUTH_SESSION_KEY, '1');
         hide('password-screen');
         postAuthBoot();
       } else {
@@ -858,7 +858,7 @@
     }
 
     function logout() {
-      sessionStorage.removeItem(AUTH_SESSION_KEY);
+      localStorage.removeItem(AUTH_SESSION_KEY);
       location.reload();
     }
 
